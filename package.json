@@ -1,0 +1,28 @@
+{
+  "dependencies": {
+    "koa": "^2.13.4",
+    "mysql2": "^2.3.3",
+    "sequelize": "^6.13.0"
+  },
+  "name": "association_backend",
+  "description": "",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "scripts": {
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Stan-BK/association_backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Stan-BK/association_backend/issues"
+  },
+  "homepage": "https://github.com/Stan-BK/association_backend#readme"
+}
