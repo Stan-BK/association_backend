@@ -1,4 +1,4 @@
-function defineSequelizeModel (sequelize, DataTypes) {
+function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
   const { INTEGER, STRING, TEXT } = DataTypes
 
   const user = sequelize.define('user', {

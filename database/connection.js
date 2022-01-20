@@ -1,4 +1,4 @@
-async function testDatabaseConnect(sequelize) {
+async function testDatabaseConnect(sequelize) { // 测试sequelize连接
   try {
     await sequelize.authenticate()
     console.log('Sequelize已成功连接数据库')
@@ -8,7 +8,7 @@ async function testDatabaseConnect(sequelize) {
   }
 }
 
-async function syncModel(sequelize) {
+async function syncModel(sequelize) { // 同步sequelize模型
   try {
     await sequelize.sync({ alter: true });
     console.log("所有模型均已成功同步.");
