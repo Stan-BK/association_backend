@@ -14,7 +14,10 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
       type: STRING(16),
       allowNull: false
     },
-    password: STRING(16),
+    password: {
+      type: STRING(16),
+      allowNull: false
+    },
     nickname:  {
       type: STRING(12),
       allowNull: false
