@@ -10,9 +10,12 @@ const sequelize = new Sequelize(config.database, config.username, config.passwor
     freezeTableName: true
   }
 })
+let model // 接收sequelize模型
 
-db(sequelize, DataTypes).then(() => {
+db(sequelize, DataTypes).then(data => {
+  model = data
+  const operate = require('./database/operate')(model) // 传入数据表模型，获得CRUD操作对象
   app.listen(3001)
-}).catch(err => {
+}).catch(error => {
   console.log('数据库同步出错:', error)
 })
