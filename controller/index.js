@@ -7,18 +7,24 @@ const type = {
 
 class Model {
   constructor() {
-    this.code
+    this.code = 200
     this.message = type[this.code]
     this.data = {} 
   }
 
-  succeed(data, message) {
+  succeed(data, message, code) {
+    this.code = code ? code : 200
     this.data = data
-    message ? this.message = message : ''
+    this.message = message ? message : type[this.code]
+    return this
   }
 
   err(data, message) {
-    data ? this.data = data : ''
-    message ? this.message = message : ''
+    this.code = code ? code : 404
+    this.data = data
+    this.message = message ? message : type[this.code]
+    return this
   }
 }
+
+module.exports = Model
