@@ -1,10 +1,21 @@
 const { defineSequelizeModel } = require('./model')
 const { testDatabaseConnect } = require('./connection')
 
-async function db(sequelize, DataTypes) {
-  const model = defineSequelizeModel(sequelize, DataTypes)
+const { Sequelize, DataTypes } = require('sequelize')
+const { config } = require('./database.config')
+const sequelize = new Sequelize(config.database, config.username, config.password, {
+  host: config.host,
+  dialect: config.dialect,
+  define: {
+    freezeTableName: true
+  }
+})
+
+async function db(app) {
   await testDatabaseConnect(sequelize) 
-  return model
+  app.context.db = {}
+  app.context.db.model = defineSequelizeModel(sequelize, DataTypes)
+  app.context.db.operate = require('./operate')(app.context.db.model) // 传入数据表模型，获得CRUD操作对象
 }
 
 module.exports = db
