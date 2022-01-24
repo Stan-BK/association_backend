@@ -8,6 +8,7 @@ const operate = function(model) {
       attributes: include ? { include: include } : options,
       where
     })
+    return JSON.stringify(person, null, 2)
     console.log('查询结果:', JSON.stringify(person, null, 2))
   }
   async function Update(table, options, where) {
