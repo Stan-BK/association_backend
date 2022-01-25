@@ -1,5 +1,5 @@
 function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
-  const { INTEGER, STRING, TEXT } = DataTypes
+  const { INTEGER, STRING, TEXT, DATE } = DataTypes
 
   const user = sequelize.define('user', {
     user_id: {
@@ -22,6 +22,8 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
       type: STRING(12),
       allowNull: false
     },
+    token: STRING,
+    time: DATE,
     avatar: STRING,
     article_collect: STRING,
     announcement_collect: STRING
