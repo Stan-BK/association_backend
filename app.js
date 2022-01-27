@@ -3,7 +3,7 @@ const koaBody = require('koa-body')
 
 const app = new Koa()
 
-const db = require('./database/index')
+const db = require('./controller/database/index')
 const router = require('./routes/index')
 db(app).catch(error => console.log('数据库操作失败：', error))
 
