@@ -19,7 +19,7 @@ class Model {
     return this
   }
 
-  err(data, message) {
+  err(data, message, code) {
     this.code = code ? code : 404
     this.data = data
     this.message = message ? message : type[this.code]
