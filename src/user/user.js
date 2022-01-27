@@ -12,7 +12,7 @@ function validate(pwd, value, lastTime) {
 
 function generateToken(pwd) {
   return new Promise((resolve, reject) => {
-    scrypt(pwd, 0, 24, (err, key) => {
+    scrypt(pwd, generateSalt(), 24, (err, key) => {
       if (err) {
         reject('token生成失败')
       } else {
