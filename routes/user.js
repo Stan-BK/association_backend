@@ -1,7 +1,7 @@
 const Router = require('koa-router')
 const router = new Router()
 const resModel = require('../controller/index')
-const { generateToken } = require('../src/user/user')
+const { generateToken, validate } = require('../src/user/user')
 
 router.post('/user/login', async (ctx) => {
   const operate = ctx.db.operate
@@ -31,17 +31,22 @@ router.post('/user/login', async (ctx) => {
 router.get('/user/info', async (ctx) => {
   const operate = ctx.db.operate
   const name = ctx.querystring.split('=')[1]
-  const content = await operate['Select']('user', [
-    'nickname',
-    'avatar',
-    'user_role',
-    'user_id',
-    'article_collect',
-    'announcement_collect'
-  ], {
-    username: name
-  })
-  ctx.body = new resModel().succeed(content)
+  try {
+    await validate(ctx.header['authorization'])
+    const content = await operate['Select']('user', [
+      'nickname',
+      'avatar',
+      'user_role',
+      'user_id',
+      'article_collect',
+      'announcement_collect'
+    ], {
+      username: name
+    })
+    ctx.body = new resModel().succeed(content)
+  } catch(e) {
+    ctx.body = new resModel().err(e)
+  }
 })
 
 module.exports = router
