@@ -14,13 +14,9 @@ router.post('/user/login', async (ctx) => {
     if (data.length === 0) {
       ctx.body = new resModel().err(undefined, '该用户不存在')
     } else {
-      const time = isKeepAlive 
-                    ? Date.now() + 30 * 24 * 60 * 60 * 1000
-                    : Date.now() + 24 * 60 * 60 * 1000
-      const token = await generateToken(user.password)
+      const token = await generateToken(user.password, isKeepAlive)
       await operate['Update']('user', { 
-        token: token, 
-        time: time 
+        token: token
       }, { 
         username: user.username 
       })
@@ -30,8 +26,6 @@ router.post('/user/login', async (ctx) => {
     console.log(e)
     ctx.body = new resModel().err(undefined, e)
   }
-  // const content = await new resModel().succeed(operate['Select']('association'))
-  // ctx.body = new resModel().succeed(content)
 })
 
 router.get('/user/info', async (ctx) => {
