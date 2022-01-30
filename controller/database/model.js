@@ -41,8 +41,8 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
       allowNull: false
     },
     avatar: STRING,
-    articles: STRING,
-    announcements: STRING
+    article_group: STRING,
+    announcement_group: STRING
   }, {
     timestamps: true
   })
@@ -123,6 +123,11 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
   }, {
     timestamps: true
   })
+
+  association.hasMany(article)
+  article.belongsTo(association, { foreignKey: 'association_id' })
+  association.hasMany(announcement)
+  announcement.belongsTo(association, { foreignKey: 'association_id' })
 
   return {
     user,
