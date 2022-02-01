@@ -13,11 +13,12 @@ router.get('/article', async (ctx) => {
 })
 
 router.get('/article/:id?', async (ctx) => {
+  const model = ctx.db.model
   const operate = ctx.db.operate
   const article_id = ctx.params.id
   let content = await operate['Select']('article', null, {
     article_id
-  })
+  }, undefined, model.association)
   ctx.body = new resModel().succeed(content)
 })
 
