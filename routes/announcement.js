@@ -3,8 +3,12 @@ const router = new Router()
 const resModel = require('../controller/index')
 
 router.get('/announcement', async (ctx) => {
+  const model = ctx.db.model
   const operate = ctx.db.operate
-  const content = await operate['Select']('announcement')
+  const content = await operate['Select']('announcement', ['name', 'avatar', 'abstract', 'association_id'], {
+    name: '测试公告',
+  }, undefined, model.association)
+  
   ctx.body = new resModel().succeed(content)
 })
 

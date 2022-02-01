@@ -8,6 +8,7 @@ router.get('/article', async (ctx) => {
   const content = await operate['Select']('article', ['name', 'avatar', 'abstract', 'association_id'], {
     name: '测试文章',
   }, undefined, model.association)
+  
   ctx.body = new resModel().succeed(content)
 })
 
