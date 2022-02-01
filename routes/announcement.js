@@ -5,7 +5,7 @@ const resModel = require('../controller/index')
 router.get('/announcement', async (ctx) => {
   const model = ctx.db.model
   const operate = ctx.db.operate
-  const content = await operate['Select']('announcement', ['name', 'avatar', 'abstract', 'association_id'], {
+  const content = await operate['Select']('announcement', ['announcement_id', 'name', 'avatar', 'abstract', 'association_id'], {
     name: '测试公告',
   }, undefined, model.association)
   
