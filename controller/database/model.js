@@ -4,7 +4,8 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
   const user = sequelize.define('user', {
     user_id: {
       type: INTEGER,
-      primaryKey: true
+      primaryKey: true,
+      autoIncrement: true
     },
     user_role: {
       type: INTEGER,
@@ -34,7 +35,8 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
   const association = sequelize.define('association', {
     association_id: {
       type: INTEGER,
-      primaryKey: true
+      primaryKey: true,
+      autoIncrement: true
     },
     name: {
       type: STRING(16),
@@ -50,7 +52,8 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
   const article = sequelize.define('article', {
     article_id: {
       type: INTEGER,
-      primaryKey: true
+      primaryKey: true,
+      autoIncrement: true
     },
     name: {
       type: STRING(16),
@@ -59,14 +62,6 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
     avatar: STRING,
     abstract: STRING(100),
     content: TEXT('long'),
-    association_id: {
-      type: INTEGER,
-      allowNull: false,
-      references: {
-        model: association,
-        key: 'association_id'
-      }
-    }
   }, {
     timestamps: true
   })
@@ -74,7 +69,8 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
   const announcement = sequelize.define('announcement', {
     announcement_id: {
       type: INTEGER,
-      primaryKey: true
+      primaryKey: true,
+      autoIncrement: true
     },
     name: {
       type: STRING(16),
@@ -83,14 +79,6 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
     avatar: STRING,
     abstract: STRING(100),
     content: TEXT('long'),
-    association_id: {
-      type: INTEGER,
-      allowNull: false,
-      references: {
-        model: association,
-        key: 'association_id'
-      }
-    }
   }, {
     timestamps: true
   })
@@ -98,15 +86,8 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
   const comment = sequelize.define('comment', {
     comment_id: {
       type: INTEGER,
-      primaryKey: true
-    },
-    user_id: {
-      type: INTEGER,
-      allowNull: false,
-      references: {
-        model: 'user',
-        key: 'user_id'
-      }
+      primaryKey: true,
+      autoIncrement: true
     },
     topic_id: {
       type: INTEGER,
@@ -128,6 +109,8 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
   article.belongsTo(association, { foreignKey: 'association_id' })
   association.hasMany(announcement)
   announcement.belongsTo(association, { foreignKey: 'association_id' })
+  user.hasMany(comment)
+  comment.belongsTo(user, { foreignKey: 'user_id' })
 
   return {
     user,

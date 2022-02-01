@@ -10,7 +10,7 @@ async function testDatabaseConnect(sequelize) { // 测试sequelize连接
 
 async function syncModel(sequelize) { // 同步sequelize模型
   try {
-    await sequelize.sync({ alter: true });
+    await sequelize.sync();
     console.log("所有模型均已成功同步.");
   } catch(error) {
     console.log("模型同步出错，原因:", error)
