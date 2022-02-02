@@ -5,11 +5,12 @@ const resModel = require('../controller/index')
 router.get('/announcement', async (ctx) => {
   const model = ctx.db.model
   const operate = ctx.db.operate
+  const count = ctx.querystring.count
   const content = await operate['Select']('announcement', ['announcement_id', 'name', 'avatar', 'abstract', 'association_id'], {
     name: '测试公告',
   }, undefined, model.association)
   
-  ctx.body = new resModel().succeed(content)
+  ctx.body = new resModel().succeed(count ? content.splice(count) : content)
 })
 
 router.get('/announcement/:id?', async (ctx) => {
