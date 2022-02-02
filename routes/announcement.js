@@ -10,7 +10,7 @@ router.get('/announcement', async (ctx) => {
     name: '测试公告',
   }, undefined, model.association)
   
-  ctx.body = new resModel().succeed(count ? content.splice(count) : content)
+  ctx.body = new resModel().succeed(count ? content.splice(count, 6) : content.splice(0, 12))
 })
 
 router.get('/announcement/:id?', async (ctx) => {
