@@ -18,7 +18,8 @@ router.get('/announcement/:id?', async (ctx) => {
   const announcement_id = ctx.params.id
   const content = await operate['Select']('announcement', null, {
     announcement_id: announcement_id
-  })
+  }, undefined, model.association)
+  
   ctx.body = new resModel().succeed(content)
 })
 
