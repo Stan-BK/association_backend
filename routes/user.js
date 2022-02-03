@@ -14,13 +14,13 @@ router.post('/user/login', async (ctx) => {
     if (data.length === 0) {
       ctx.body = new resModel().err(undefined, '该用户不存在')
     } else {
-      const token = await generateToken(user.password, isKeepAlive)
+      const token = await generateToken(user.username, isKeepAlive) // 根据用户名生成token
       await operate['Update']('user', { 
         token: token
       }, { 
         username: user.username 
       })
-      ctx.body = new resModel()
+      ctx.body = new resModel().succeed(token) // 返回token给用户
     }
   } catch(e) {
     console.log(e)
@@ -30,9 +30,10 @@ router.post('/user/login', async (ctx) => {
 
 router.get('/user/info', async (ctx) => {
   const operate = ctx.db.operate
-  const name = ctx.querystring.split('=')[1]
   try {
     await validate(ctx.header['authorization'])
+    // 解码得出用户名以进行数据查询
+    const username = Buffer.from(ctx.header['authorization'].split(':')[0], 'base64').toString('utf-8')
     const content = await operate['Select']('user', [
       'nickname',
       'avatar',
@@ -41,7 +42,7 @@ router.get('/user/info', async (ctx) => {
       'article_collect',
       'announcement_collect'
     ], {
-      username: name
+      username: username
     })
     ctx.body = new resModel().succeed(content)
   } catch(e) {
