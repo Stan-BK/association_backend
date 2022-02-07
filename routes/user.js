@@ -7,12 +7,16 @@ router.post('/user/login', async (ctx) => {
   const operate = ctx.db.operate
   const user = ctx.request.body
   const isKeepAlive = user.isKeepAlive
+  if (user.username === '' || user.password === '') {
+    ctx.body = new resModel().err(undefined, '用户名和密码不能为空')
+    return
+  }
   try {
     const data = await operate['Select']('user', null, { 
       username: user.username 
     })
-    if (data.length === 0) {
-      ctx.body = new resModel().err(undefined, '该用户不存在')
+    if (data.length === 0 || data[0].password !== user.password) {
+      ctx.body = new resModel().err(undefined, '用户名或密码错误')
     } else {
       const token = await generateToken(user.username, isKeepAlive) // 根据用户名生成token
       await operate['Update']('user', { 
