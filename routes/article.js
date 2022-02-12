@@ -1,6 +1,7 @@
 const Router = require('koa-router')
 const router = new Router()
 const resModel = require('../controller/index')
+const { splitToken, validate } = require('../src/user/user')
 
 router.get('/article', async (ctx) => {
   const model = ctx.db.model
@@ -11,6 +12,30 @@ router.get('/article', async (ctx) => {
   }, undefined, model.association)
   
   ctx.body = new resModel().succeed(content.splice(count, 6))
+})
+
+router.get('/article/collect', async (ctx) => {
+  try {
+    const model = ctx.db.model
+    const operate = ctx.db.operate
+    const token = ctx.header['authorization']
+    console.log(token)
+    await validate(token)
+    const { username } = splitToken(token)
+    let collection = await operate['Select']('user', ['article_collect'], { username: username })
+    if (collection.length) {
+      collection = collection[0]['article_collect'].split(',')
+      const content = await operate['Select']('article', ['article_id', 'name', 'avatar', 'abstract', 'association_id'], {
+        article_id: collection
+      }, undefined, model.association)
+      ctx.body = new resModel().succeed(content)
+    } else {
+      ctx.body = new resModel().success([])
+    }
+  } catch(e) {
+    console.log(e)
+    ctx.body = new resModel().err(undefined, e)
+  }
 })
 
 router.get('/article/:id?', async (ctx) => {
