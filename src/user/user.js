@@ -5,11 +5,13 @@ const salt = generateSalt()
 
 function splitToken(token) { // 分别取出token三部分：用户名、有效期、签名
   const usersign = token.split(':')[0]
-  const time = Buffer.from(token.split(':')[1], 'base64').toString('utf-8')
+  const timesign = token.split(':')[1]
+  const time = Buffer.from(timesign, 'base64').toString('utf-8')
   const sign = token.split(':')[2]
   const username = Buffer.from(usersign, 'base64').toString('utf-8')
   return {
     usersign,
+    timesign,
     username,
     time,
     sign
@@ -19,11 +21,11 @@ function splitToken(token) { // 分别取出token三部分：用户名、有效�
 function validate(token) { // 验证token
   return new Promise((resolve, reject) => {
     const now = Date.now()
-    const { usersign, time, sign } = splitToken(token)
+    const { usersign, timesign, time, sign } = splitToken(token)
     if (now > time) {
       reject('登录过期')
     } else {
-      scrypt(usersign + time, salt, 24, (err, key) => { // 异步调用加盐方法
+      scrypt(usersign + timesign, salt, 24, (err, key) => { // 异步调用加盐方法
         if (err) {
           reject(err)
         } else {
