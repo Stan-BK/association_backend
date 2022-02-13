@@ -3,6 +3,7 @@ const router = new Router()
 const resModel = require('../controller/index')
 const { splitToken, validate } = require('../src/user/user')
 
+// 返回所有文章列表
 router.get('/article', async (ctx) => {
   const model = ctx.db.model
   const operate = ctx.db.operate
@@ -14,12 +15,12 @@ router.get('/article', async (ctx) => {
   ctx.body = new resModel().succeed(content.splice(count, 6))
 })
 
+// 返回用户文章收藏列表
 router.get('/article/collect', async (ctx) => {
   try {
     const model = ctx.db.model
     const operate = ctx.db.operate
     const token = ctx.header['authorization']
-    console.log(token)
     await validate(token)
     const { username } = splitToken(token)
     let collection = await operate['Select']('user', ['article_collect'], { username: username })
@@ -38,6 +39,7 @@ router.get('/article/collect', async (ctx) => {
   }
 })
 
+// 返回指定文章
 router.get('/article/:id?', async (ctx) => {
   const model = ctx.db.model
   const operate = ctx.db.operate
