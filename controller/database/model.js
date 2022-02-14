@@ -42,6 +42,10 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
       type: STRING(16),
       allowNull: false
     },
+    path: {
+      type: STRING,
+      allowNull: false
+    },
     avatar: STRING,
     article_group: STRING,
     announcement_group: STRING

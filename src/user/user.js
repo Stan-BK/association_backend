@@ -20,22 +20,26 @@ function splitToken(token) { // 分别取出token三部分：用户名、有效�
 
 function validate(token) { // 验证token
   return new Promise((resolve, reject) => {
-    const now = Date.now()
-    const { usersign, timesign, time, sign } = splitToken(token)
-    if (now > time) {
-      reject('登录过期')
-    } else {
-      scrypt(usersign + timesign, salt, 24, (err, key) => { // 异步调用加盐方法
-        if (err) {
-          reject(err)
-        } else {
-          if (key.toString('hex') === sign) {
-            resolve('权限正确')
+    try {
+      const now = Date.now()
+      const { usersign, timesign, time, sign } = splitToken(token)
+      if (now > time) {
+        reject('登录过期')
+      } else {
+        scrypt(usersign + timesign, salt, 24, (err, key) => { // 异步调用加盐方法
+          if (err) {
+            reject(err)
           } else {
-            reject('权限错误')
+            if (key.toString('hex') === sign) {
+              resolve('权限正确')
+            } else {
+              reject('权限错误')
+            }
           }
-        }
-      })
+        })
+      }
+    } catch {
+      reject('权限错误')
     }
   })
 }
