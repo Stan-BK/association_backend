@@ -8,6 +8,13 @@ router.get('/association', async (ctx) => {
   ctx.body = new resModel().succeed(content)
 })
 
+router.get('/association/list', async (ctx) => {
+  const operate = ctx.db.operate
+  const model = ctx.db.model
+  const content = await operate['Select']('association', ['name', 'path'])
+  ctx.body = new resModel().succeed(content)
+})
+
 router.get('/association/:name?', async (ctx) => {
   const operate = ctx.db.operate
   const name = ctx.params.name
