@@ -48,7 +48,8 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
     },
     avatar: STRING,
     article_group: STRING,
-    announcement_group: STRING
+    announcement_group: STRING,
+    admin_group: STRING
   }, {
     timestamps: true
   })
