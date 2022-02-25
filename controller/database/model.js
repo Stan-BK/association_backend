@@ -25,7 +25,7 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
     },
     token: STRING,
     time: DATE,
-    avatar: STRING,
+    avatar: STRING(1000),
     article_collect: STRING,
     announcement_collect: STRING
   }, {
@@ -46,7 +46,7 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
       type: STRING,
       allowNull: false
     },
-    avatar: STRING,
+    avatar: STRING(1000),
     article_group: STRING,
     announcement_group: STRING,
     admin_group: STRING
@@ -64,7 +64,7 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
       type: STRING(16),
       allowNull: false
     },
-    avatar: STRING,
+    avatar: STRING(1000),
     abstract: STRING(100),
     content: TEXT('long'),
   }, {
@@ -81,7 +81,7 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
       type: STRING(16),
       allowNull: false
     },
-    avatar: STRING,
+    avatar: STRING(1000),
     abstract: STRING(100),
     content: TEXT('long'),
   }, {
