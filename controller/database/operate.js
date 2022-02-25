@@ -36,7 +36,8 @@ const operate = function(model) {
     Insert,
     Select,
     Update,
-    Delete
+    Delete,
+    SelectOne
   }
 }
 
