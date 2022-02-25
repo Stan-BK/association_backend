@@ -12,6 +12,14 @@ const operate = function(model) {
     console.log('查询结果:', JSON.stringify(person, null, 2))
     return person
   }
+  async function SelectOne(table, options, where, include) {
+    const person = await model[table].findOne({
+      where,
+      include
+    })
+    console.log('查询结果:', JSON.stringify(person, null, 2))
+    return person
+  }
   async function Update(table, options, where) {
     await model[table].update(options, {
       where
