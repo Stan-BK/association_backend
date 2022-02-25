@@ -39,6 +39,21 @@ router.get('/article/collect', async (ctx) => {
   }
 })
 
+// 返回社团文章列表
+router.get('/:association/article', async (ctx) => {
+  const model = ctx.db.model
+  const operate = ctx.db.operate
+  const association = ctx.params.association
+  try {
+    const content = await operate['SelectOne']('association', {
+      path: association
+    }, model['article'])
+    ctx.body = new resModel().succeed(content.articles)
+  } catch(e) {
+    ctx.body = new resModel().err(undefined, e)
+  }
+})
+
 // 返回指定文章
 router.get('/article/:id?', async (ctx) => {
   const model = ctx.db.model
