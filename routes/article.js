@@ -47,8 +47,22 @@ router.get('/:association/article', async (ctx) => {
   try {
     const content = await operate['SelectOne']('association', {
       path: association
-    }, model['article'])
-    ctx.body = new resModel().succeed(content.articles)
+    }, {
+      model: model['article'],
+      attributes: ['article_id', 'name', 'avatar', 'abstract', 'association_id']
+    })
+    const articleAssociation = {}
+    for (var key of Reflect.ownKeys(content.dataValues)) {
+      if (key !== 'articles') {
+        articleAssociation[key] = content[key]
+      }
+    }
+    
+    const articles = content.articles.map(item => {
+      item.dataValues.association = articleAssociation
+      return item
+    })
+    ctx.body = new resModel().succeed(articles)
   } catch(e) {
     ctx.body = new resModel().err(undefined, e)
   }
