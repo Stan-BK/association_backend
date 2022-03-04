@@ -5,6 +5,7 @@ const user = require('./user')
 const article = require('./article')
 const announcement = require('./announcement')
 const comment = require('./comment')
+const source = require('./source')
 
 
 router.use('', association.routes(), association.allowedMethods())
@@ -12,5 +13,6 @@ router.use('', user.routes(), user.allowedMethods())
 router.use('', article.routes(), article.allowedMethods())
 router.use('', announcement.routes(), announcement.allowedMethods())
 router.use('', comment.routes(), comment.allowedMethods())
+router.use('', source.routes(), source.allowedMethods())
 
 module.exports = router
