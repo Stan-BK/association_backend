@@ -80,4 +80,23 @@ router.get('/article/:id?', async (ctx) => {
   ctx.body = new resModel().succeed(content)
 })
 
+// 添加文章
+router.put('/article', async (ctx) => {
+  const operate = ctx.db.operate
+  const article = ctx.request.body
+  try {
+    await operate['Insert']('aritcle', {
+      association_id: article.association_id,
+      associationAssociationId: article.association_id,
+      name: article.name,
+      avatar: article.avatar,
+      abstract: article.abstract,
+      content: article.content
+    })
+    ctx.body = new resModel().succeed(undefined, '添加文章成功')
+  } catch(e) {
+    ctx.body = new resModel().err(undefined, e)
+  }
+})
+
 module.exports = router
