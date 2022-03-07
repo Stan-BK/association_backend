@@ -20,7 +20,11 @@ class ResModel {
   }
 
   err(data, message, code) {
-    this.code = code ? code : 404
+    if (message instanceof Error === false && message === '权限错误') {
+      this.code = 403
+    } else {
+      this.code = code ? code : 404
+    }
     this.data = data
     this.message = message ? message : type[this.code]
     return this
