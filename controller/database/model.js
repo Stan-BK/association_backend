@@ -27,7 +27,8 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
     time: DATE,
     avatar: STRING(1000),
     article_collect: STRING,
-    announcement_collect: STRING
+    announcement_collect: STRING,
+    association_group: STRING
   }, {
     timestamps: true
   })
