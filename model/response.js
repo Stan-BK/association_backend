@@ -1,11 +1,11 @@
 const type = {
   200: 'success',
-  400: '参数有误',
-  404: '当前操作无权限',
+  403: '当前操作无权限',
+  404: '请求失败',
   500: '服务器错误'
 }
 
-class Model {
+class ResModel {
   constructor() {
     this.code = 200
     this.message = type[this.code]
@@ -27,4 +27,4 @@ class Model {
   }
 }
 
-module.exports = Model
+module.exports = ResModel

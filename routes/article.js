@@ -1,6 +1,6 @@
 const Router = require('koa-router')
 const router = new Router()
-const resModel = require('../controller/index')
+const ResModel = require('../model/response')
 const { splitToken, validate } = require('../src/user/user')
 
 // 返回所有文章列表
@@ -10,7 +10,7 @@ router.get('/article', async (ctx) => {
   const count = ctx.querystring.split('=')[1]
   const content = await operate['Select']('article', ['article_id', 'name', 'avatar', 'abstract', 'association_id'], undefined , undefined, model.association)
   
-  ctx.body = new resModel().succeed(content.splice(count, 6))
+  ctx.body = new ResModel().succeed(content.splice(count, 6))
 })
 
 // 返回用户文章收藏列表
@@ -27,13 +27,13 @@ router.get('/article/collect', async (ctx) => {
       const content = await operate['Select']('article', ['article_id', 'name', 'avatar', 'abstract', 'association_id'], {
         article_id: collection
       }, undefined, model.association)
-      ctx.body = new resModel().succeed(content)
+      ctx.body = new ResModel().succeed(content)
     } else {
-      ctx.body = new resModel().success([])
+      ctx.body = new ResModel().success([])
     }
   } catch(e) {
     console.log(e)
-    ctx.body = new resModel().err(undefined, e)
+    ctx.body = new ResModel().err(undefined, e)
   }
 })
 
@@ -60,9 +60,9 @@ router.get('/:association/article', async (ctx) => {
       item.dataValues.association = articleAssociation
       return item
     })
-    ctx.body = new resModel().succeed(articles)
+    ctx.body = new ResModel().succeed(articles)
   } catch(e) {
-    ctx.body = new resModel().err(undefined, e)
+    ctx.body = new ResModel().err(undefined, e)
   }
 })
 
@@ -75,7 +75,7 @@ router.get('/article/:id?', async (ctx) => {
     article_id
   }, undefined, model.association)
   
-  ctx.body = new resModel().succeed(content)
+  ctx.body = new ResModel().succeed(content)
 })
 
 // 添加文章
@@ -94,10 +94,10 @@ router.put('/article', async (ctx) => {
       abstract: article.abstract,
       content: article.content
     })
-    ctx.body = new resModel().succeed(undefined, '添加文章成功')
+    ctx.body = new ResModel().succeed(undefined, '添加文章成功')
   } catch(e) {
     console.log(e)
-    ctx.body = new resModel().err(undefined, e.message)
+    ctx.body = new ResModel().err(undefined, e.message)
   }
 })
 

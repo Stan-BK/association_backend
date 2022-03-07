@@ -1,6 +1,6 @@
 const Router = require('koa-router')
 const router = new Router()
-const resModel = require('../controller/index')
+const ResModel = require('../model/response')
 const { splitToken, validate } = require('../src/user/user')
 
 // 返回所有公告列表
@@ -12,7 +12,7 @@ router.get('/announcement', async (ctx) => {
     name: '测试公告',
   }, undefined, model.association)
   
-  ctx.body = new resModel().succeed(content.splice(count, 6))
+  ctx.body = new ResModel().succeed(content.splice(count, 6))
 })
 
 // 返回用户公告收藏列表
@@ -29,13 +29,13 @@ router.get('/announcement/collect', async (ctx) => {
       const content = await operate['Select']('announcement', ['announcement_id', 'name', 'avatar', 'abstract', 'association_id'], {
         announcement_id: collection
       }, undefined, model.association)
-      ctx.body = new resModel().succeed(content)
+      ctx.body = new ResModel().succeed(content)
     } else {
-      ctx.body = new resModel().success([])
+      ctx.body = new ResModel().success([])
     }
   } catch(e) {
     console.log(e)
-    ctx.body = new resModel().err(undefined, e)
+    ctx.body = new ResModel().err(undefined, e)
   }
 })
 
@@ -62,9 +62,9 @@ router.get('/:association/announcement', async (ctx) => {
       item.dataValues.association = announcementAssociation
       return item
     })
-    ctx.body = new resModel().succeed(announcements)
+    ctx.body = new ResModel().succeed(announcements)
   } catch(e) {
-    ctx.body = new resModel().err(undefined, e)
+    ctx.body = new ResModel().err(undefined, e)
   }
 })
 
@@ -77,7 +77,7 @@ router.get('/announcement/:id?', async (ctx) => {
     announcement_id: announcement_id
   }, undefined, model.association)
 
-  ctx.body = new resModel().succeed(content)
+  ctx.body = new ResModel().succeed(content)
 })
 
 // 添加公告
@@ -96,10 +96,10 @@ router.put('/announcement', async (ctx) => {
       abstract: announcement.abstract,
       content: announcement.content
     })
-    ctx.body = new resModel().succeed(undefined, '添加公告成功')
+    ctx.body = new ResModel().succeed(undefined, '添加公告成功')
   } catch(e) {
     console.log(e)
-    ctx.body = new resModel().err(undefined, e.message)
+    ctx.body = new ResModel().err(undefined, e.message)
   }
 })
 

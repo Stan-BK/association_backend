@@ -1,6 +1,6 @@
 const Router = require('koa-router')
 const router = new Router()
-const resModel = require('../controller/index')
+const ResModel = require('../model/response')
 const { generateToken, validate } = require('../src/user/user')
 const { formUploader, uploadToken, putExtra } = require('../src/qiniu')
 const buffer = require('buffer')
@@ -28,9 +28,9 @@ router.put('/source', async (ctx) => {
         resolve(respBody)
       });
     })
-    ctx.body = new resModel().succeed('http://source.geminikspace.com/' + response.key)
+    ctx.body = new ResModel().succeed('http://source.geminikspace.com/' + response.key)
   } catch(e) {
-    ctx.body = new resModel().err(undefined, e)
+    ctx.body = new ResModel().err(undefined, e)
   }
 })
 

@@ -1,6 +1,6 @@
 const Router = require('koa-router')
 const router = new Router()
-const resModel = require('../controller/index')
+const ResModel = require('../model/response')
 const { generateToken, validate } = require('../src/user/user')
 
 router.post('/user/login', async (ctx) => {
@@ -8,7 +8,7 @@ router.post('/user/login', async (ctx) => {
   const user = ctx.request.body
   const isKeepAlive = user.isKeepAlive
   if (user.username === '' || user.password === '') {
-    ctx.body = new resModel().err(undefined, '用户名和密码不能为空')
+    ctx.body = new ResModel().err(undefined, '用户名和密码不能为空')
     return
   }
   try {
@@ -16,7 +16,7 @@ router.post('/user/login', async (ctx) => {
       username: user.username 
     })
     if (data.length === 0 || data[0].password !== user.password) {
-      ctx.body = new resModel().err(undefined, '用户名或密码错误')
+      ctx.body = new ResModel().err(undefined, '用户名或密码错误')
     } else {
       const token = await generateToken(user.username, isKeepAlive) // 根据用户名生成token
       await operate['Update']('user', { 
@@ -24,11 +24,11 @@ router.post('/user/login', async (ctx) => {
       }, { 
         username: user.username 
       })
-      ctx.body = new resModel().succeed(token) // 返回token给用户
+      ctx.body = new ResModel().succeed(token) // 返回token给用户
     }
   } catch(e) {
     console.log(e)
-    ctx.body = new resModel().err(undefined, e)
+    ctx.body = new ResModel().err(undefined, e)
   }
 })
 
@@ -48,9 +48,9 @@ router.get('/user/info', async (ctx) => {
     ], {
       username: username
     })
-    ctx.body = new resModel().succeed(content)
+    ctx.body = new ResModel().succeed(content)
   } catch(e) {
-    ctx.body = new resModel().err(e)
+    ctx.body = new ResModel().err(e)
   }
 })
 
