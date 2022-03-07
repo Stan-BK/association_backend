@@ -8,9 +8,7 @@ router.get('/article', async (ctx) => {
   const model = ctx.db.model
   const operate = ctx.db.operate
   const count = ctx.querystring.split('=')[1]
-  const content = await operate['Select']('article', ['article_id', 'name', 'avatar', 'abstract', 'association_id'], {
-    name: '测试文章',
-  }, undefined, model.association)
+  const content = await operate['Select']('article', ['article_id', 'name', 'avatar', 'abstract', 'association_id'], undefined , undefined, model.association)
   
   ctx.body = new resModel().succeed(content.splice(count, 6))
 })

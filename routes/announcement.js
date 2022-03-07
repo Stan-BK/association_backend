@@ -80,5 +80,23 @@ router.get('/announcement/:id?', async (ctx) => {
   ctx.body = new resModel().succeed(content)
 })
 
+// 添加公告
+router.put('/announcement', async (ctx) => {
+  const operate = ctx.db.operate
+  const announcement = ctx.request.body
+  try {
+    await operate['Insert']('announcement', {
+      association_id: announcement.association_id,
+      associationAssociationId: announcement.association_id,
+      name: announcement.name,
+      avatar: announcement.avatar,
+      abstract: announcement.abstract,
+      content: announcement.content
+    })
+    ctx.body = new resModel().succeed(undefined, '添加公告成功')
+  } catch(e) {
+    ctx.body = new resModel().err(undefined, e)
+  }
+})
 
 module.exports = router
