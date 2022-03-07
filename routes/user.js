@@ -50,7 +50,7 @@ router.get('/user/info', async (ctx) => {
     })
     ctx.body = new ResModel().succeed(content)
   } catch(e) {
-    ctx.body = new ResModel().err(e)
+    ctx.body = new ResModel().err(undefined, e)
   }
 })
 
