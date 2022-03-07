@@ -85,6 +85,9 @@ router.put('/announcement', async (ctx) => {
   const operate = ctx.db.operate
   const announcement = ctx.request.body
   try {
+    if (announcement.name === '' || !announcement.association_id) {
+      throw new Error('必填字段为空')
+    }
     await operate['Insert']('announcement', {
       association_id: announcement.association_id,
       associationAssociationId: announcement.association_id,
@@ -95,7 +98,8 @@ router.put('/announcement', async (ctx) => {
     })
     ctx.body = new resModel().succeed(undefined, '添加公告成功')
   } catch(e) {
-    ctx.body = new resModel().err(undefined, e)
+    console.log(e)
+    ctx.body = new resModel().err(undefined, e.message)
   }
 })
 

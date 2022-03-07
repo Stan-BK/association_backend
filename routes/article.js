@@ -83,7 +83,10 @@ router.put('/article', async (ctx) => {
   const operate = ctx.db.operate
   const article = ctx.request.body
   try {
-    await operate['Insert']('aritcle', {
+    if (article.name === '' || !article.association_id) {
+      throw new Error('必填字段为空')
+    }
+    await operate['Insert']('article', {
       association_id: article.association_id,
       associationAssociationId: article.association_id,
       name: article.name,
@@ -93,7 +96,8 @@ router.put('/article', async (ctx) => {
     })
     ctx.body = new resModel().succeed(undefined, '添加文章成功')
   } catch(e) {
-    ctx.body = new resModel().err(undefined, e)
+    console.log(e)
+    ctx.body = new resModel().err(undefined, e.message)
   }
 })
 
