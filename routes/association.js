@@ -18,9 +18,9 @@ router.get('/association/list', async (ctx) => {
 router.get('/association/:name?', async (ctx) => {
   const operate = ctx.db.operate
   const name = ctx.params.name
-  const content = await new ResModel().succeed(operate['Select']('association', null, {
-    name
-  }))
+  const content = await operate['Select']('association', null, {
+    path: name
+  })
   ctx.body = new ResModel().succeed(content)
 })
 
