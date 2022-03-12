@@ -13,7 +13,8 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
     },
     username: {
       type: STRING(16),
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
     password: {
       type: STRING(16),
@@ -21,14 +22,12 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
     },
     nickname:  {
       type: STRING(12),
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
-    token: STRING,
-    time: DATE,
     avatar: STRING(1000),
     article_collect: STRING,
-    announcement_collect: STRING,
-    association_group: STRING
+    announcement_collect: STRING
   }, {
     timestamps: true
   })
@@ -41,16 +40,15 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
     },
     name: {
       type: STRING(16),
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
     path: {
       type: STRING,
-      allowNull: false
+      allowNull: false,
+      unique: true
     },
-    avatar: STRING(1000),
-    article_group: STRING,
-    announcement_group: STRING,
-    admin_group: STRING
+    avatar: STRING(1000)
   }, {
     timestamps: true
   })
@@ -111,12 +109,14 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
     timestamps: true
   })
 
+  association.hasMany(user)
+  user.belongsTo(association)
   association.hasMany(article)
-  article.belongsTo(association, { foreignKey: 'association_id' })
+  article.belongsTo(association)
   association.hasMany(announcement)
-  announcement.belongsTo(association, { foreignKey: 'association_id' })
+  announcement.belongsTo(association)
   user.hasMany(comment)
-  comment.belongsTo(user, { foreignKey: 'user_id' })
+  comment.belongsTo(user)
 
   return {
     user,

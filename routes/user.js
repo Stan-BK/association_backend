@@ -2,6 +2,7 @@ const Router = require('koa-router')
 const router = new Router()
 const ResModel = require('../model/response')
 const { generateToken, validate } = require('../src/user/user')
+const generateError = require('../src/error')
 
 router.post('/user/login', async (ctx) => {
   const operate = ctx.db.operate
@@ -19,11 +20,6 @@ router.post('/user/login', async (ctx) => {
       ctx.body = new ResModel().err(undefined, '用户名或密码错误')
     } else {
       const token = await generateToken(user.username, isKeepAlive) // 根据用户名生成token
-      await operate['Update']('user', { 
-        token: token
-      }, { 
-        username: user.username 
-      })
       ctx.body = new ResModel().succeed(token) // 返回token给用户
     }
   } catch(e) {
@@ -51,6 +47,31 @@ router.get('/user/info', async (ctx) => {
     ctx.body = new ResModel().succeed(content)
   } catch(e) {
     ctx.body = new ResModel().err(undefined, e)
+  }
+})
+
+router.put('/user/register', async (ctx, next) => {
+  const operate = ctx.db.operate
+  const user = ctx.request.body
+  try {
+    await operate['Insert']('user', {
+      avatar: user.avatar,
+      username: user.username,
+      password: user.password,
+      nickname: user.nickname,
+      user_role: 1
+    })
+    const token = await generateToken(user.username, false) // 根据用户名生成token
+    ctx.body = new ResModel().succeed(token)
+  } catch(e) {
+    let error = generateError(e)
+    const obj = {
+      'username': '用户名',
+      'nickname': '昵称'
+    }
+    const field = obj[error.split(' ')[0]]
+    error = field + '已存在'
+    ctx.body = new ResModel().err(undefined, error)
   }
 })
 
