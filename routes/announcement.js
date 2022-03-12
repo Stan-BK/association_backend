@@ -8,11 +8,9 @@ router.get('/announcement', async (ctx) => {
   const model = ctx.db.model
   const operate = ctx.db.operate
   const count = ctx.querystring.split('=')[1]
-  const content = await operate['Select']('announcement', ['announcement_id', 'name', 'avatar', 'abstract', 'association_id'], {
-    name: '测试公告',
-  }, undefined, model.association)
+  const content = await operate['Select']('announcement', ['announcement_id', 'name', 'avatar', 'abstract', 'associationAssociationId'], undefined, undefined, model.association)
   
-  ctx.body = new ResModel().succeed(content.splice(count, 6))
+  ctx.body = new ResModel().succeed(content.splice(count, count == undefined ? content.length : 6))
 })
 
 // 返回用户公告收藏列表
@@ -26,7 +24,7 @@ router.get('/announcement/collect', async (ctx) => {
     let collection = await operate['Select']('user', ['announcement_collect'], { username: username })
     if (collection.length) {
       collection = collection[0]['announcement_collect'].split(',')
-      const content = await operate['Select']('announcement', ['announcement_id', 'name', 'avatar', 'abstract', 'association_id'], {
+      const content = await operate['Select']('announcement', ['announcement_id', 'name', 'avatar', 'abstract', 'associationAssociationId'], {
         announcement_id: collection
       }, undefined, model.association)
       ctx.body = new ResModel().succeed(content)
@@ -49,7 +47,7 @@ router.get('/:association/announcement', async (ctx) => {
       path: association
     }, {
       model: model['announcement'],
-      attributes: ['announcement_id', 'name', 'avatar', 'abstract', 'association_id']
+      attributes: ['announcement_id', 'name', 'avatar', 'abstract', 'associationAssociationId']
     })
     const announcementAssociation = {}
     for (var key of Reflect.ownKeys(content.dataValues)) {
@@ -89,7 +87,6 @@ router.put('/announcement', async (ctx) => {
       throw new Error('必填字段为空')
     }
     await operate['Insert']('announcement', {
-      association_id: announcement.association_id,
       associationAssociationId: announcement.association_id,
       name: announcement.name,
       avatar: announcement.avatar,

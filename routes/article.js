@@ -8,9 +8,9 @@ router.get('/article', async (ctx) => {
   const model = ctx.db.model
   const operate = ctx.db.operate
   const count = ctx.querystring.split('=')[1]
-  const content = await operate['Select']('article', ['article_id', 'name', 'avatar', 'abstract', 'association_id'], undefined , undefined, model.association)
+  const content = await operate['Select']('article', ['article_id', 'name', 'avatar', 'abstract', 'associationAssociationId'], undefined , undefined, model.association)
   
-  ctx.body = new ResModel().succeed(content.splice(count, 6))
+  ctx.body = new ResModel().succeed(content.splice(count, count == undefined ? content.length : 6))
 })
 
 // 返回用户文章收藏列表
@@ -24,7 +24,7 @@ router.get('/article/collect', async (ctx) => {
     let collection = await operate['Select']('user', ['article_collect'], { username: username })
     if (collection.length) {
       collection = collection[0]['article_collect'].split(',')
-      const content = await operate['Select']('article', ['article_id', 'name', 'avatar', 'abstract', 'association_id'], {
+      const content = await operate['Select']('article', ['article_id', 'name', 'avatar', 'abstract', 'associationAssociationId'], {
         article_id: collection
       }, undefined, model.association)
       ctx.body = new ResModel().succeed(content)
@@ -47,7 +47,7 @@ router.get('/:association/article', async (ctx) => {
       path: association
     }, {
       model: model['article'],
-      attributes: ['article_id', 'name', 'avatar', 'abstract', 'association_id']
+      attributes: ['article_id', 'name', 'avatar', 'abstract', 'associationAssociationId']
     })
     const articleAssociation = {}
     for (var key of Reflect.ownKeys(content.dataValues)) {
@@ -87,7 +87,6 @@ router.put('/article', async (ctx) => {
       throw new Error('必填字段为空')
     }
     await operate['Insert']('article', {
-      association_id: article.association_id,
       associationAssociationId: article.association_id,
       name: article.name,
       avatar: article.avatar,
