@@ -30,20 +30,14 @@ router.post('/user/login', async (ctx) => {
 
 router.get('/user/info', async (ctx) => {
   const operate = ctx.db.operate
+  const model = ctx.db.model
   try {
     await validate(ctx.header['authorization'])
     // 解码得出用户名以进行数据查询
     const username = Buffer.from(ctx.header['authorization'].split(':')[0], 'base64').toString('utf-8')
-    const content = await operate['Select']('user', [
-      'nickname',
-      'avatar',
-      'user_role',
-      'user_id',
-      'article_collect',
-      'announcement_collect'
-    ], {
+    const content = await operate['SelectOne']('user', {
       username: username
-    })
+    }, model['association'])
     ctx.body = new ResModel().succeed(content)
   } catch(e) {
     ctx.body = new ResModel().err(undefined, e)
