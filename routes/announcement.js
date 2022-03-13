@@ -86,16 +86,47 @@ router.put('/announcement', async (ctx) => {
     if (announcement.name === '' || !announcement.association_id) {
       throw new Error('必填字段为空')
     }
-    await operate['Insert']('announcement', {
-      associationAssociationId: announcement.association_id,
-      name: announcement.name,
-      avatar: announcement.avatar,
-      abstract: announcement.abstract,
-      content: announcement.content
-    })
-    ctx.body = new ResModel().succeed(undefined, '添加公告成功')
+    await validate(token)
+    const { username } = splitToken(token)
+    const admin = await operate['SelectOne']('user', { username: username })
+    const res = admin.associationAssociationId === announcement.association_id
+    if (res) {
+      await operate['Insert']('announcement', {
+        associationAssociationId: announcement.association_id,
+        name: announcement.name,
+        avatar: announcement.avatar,
+        abstract: announcement.abstract,
+        content: announcement.content
+      })
+      ctx.body = new ResModel().succeed(undefined, '添加公告成功')
+    } else {
+      throw new Error({ message: '添加公告失败' })
+    }
   } catch(e) {
     console.log(e)
+    ctx.body = new ResModel().err(undefined, e.message)
+  }
+})
+
+// 删除公告
+router.delete('/announcement', async (ctx) => {
+  const operate = ctx.db.operate
+  const announcement_id = ctx.querystring.split('=')[0] === 'id' ?  ctx.querystring.split('=')[1] : undefined
+  const token = ctx.header['authorization']
+  try {
+    await validate(token)
+    const { username } = splitToken(token)
+    const admin = await operate['SelectOne']('user', { username: username })
+    const res = await validateRole(ctx.db, admin, announcement_id, 'announcement')
+    if (announcement_id && res) {
+      await operate['Delete']('announcement', {
+        announcement_id
+      })
+    } else {
+      throw new Error({ message: '删除失败' })
+    }
+    ctx.body = new ResModel().succeed(undefined, '删除成功')
+  } catch(e) {
     ctx.body = new ResModel().err(undefined, e.message)
   }
 })

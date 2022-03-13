@@ -1,6 +1,7 @@
 const Router = require('koa-router')
 const router = new Router()
 const ResModel = require('../model/response')
+const { validateRole } = require('../src/user/admin')
 const { splitToken, validate } = require('../src/user/user')
 
 // 返回所有文章列表
@@ -86,16 +87,46 @@ router.put('/article', async (ctx) => {
     if (article.name === '' || !article.association_id) {
       throw new Error('必填字段为空')
     }
-    await operate['Insert']('article', {
-      associationAssociationId: article.association_id,
-      name: article.name,
-      avatar: article.avatar,
-      abstract: article.abstract,
-      content: article.content
-    })
-    ctx.body = new ResModel().succeed(undefined, '添加文章成功')
+    await validate(token)
+    const { username } = splitToken(token)
+    const admin = await operate['SelectOne']('user', { username: username })
+    const res = admin.associationAssociationId === article.association_id
+    if (res) {
+      await operate['Insert']('article', {
+        associationAssociationId: article.association_id,
+        name: article.name,
+        avatar: article.avatar,
+        abstract: article.abstract,
+        content: article.content
+      })
+      ctx.body = new ResModel().succeed(undefined, '添加文章成功')
+    } else {
+      throw new Error({ message: '添加文章失败'})
+    }
   } catch(e) {
-    console.log(e)
+    ctx.body = new ResModel().err(undefined, e.message)
+  }
+})
+
+// 删除文章
+router.delete('/article', async (ctx) => {
+  const operate = ctx.db.operate
+  const article_id = ctx.querystring.split('=')[0] === 'id' ?  ctx.querystring.split('=')[1] : undefined
+  const token = ctx.header['authorization']
+  try {
+    await validate(token)
+    const { username } = splitToken(token)
+    const admin = await operate['SelectOne']('user', { username: username })
+    const res = await validateRole(ctx.db, admin, article_id, 'article')
+    if (article_id && res) {
+      await operate['Delete']('article', {
+        article_id
+      })
+    } else {
+      throw new Error({ message: '删除失败'})
+    }
+    ctx.body = new ResModel().succeed(undefined, '删除成功')
+  } catch(e) {
     ctx.body = new ResModel().err(undefined, e.message)
   }
 })
