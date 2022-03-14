@@ -82,6 +82,7 @@ router.get('/announcement/:id?', async (ctx) => {
 router.put('/announcement', async (ctx) => {
   const operate = ctx.db.operate
   const announcement = ctx.request.body
+  const token = ctx.header['authorization']
   try {
     if (announcement.name === '' || !announcement.association_id) {
       throw new Error('必填字段为空')
@@ -100,10 +101,9 @@ router.put('/announcement', async (ctx) => {
       })
       ctx.body = new ResModel().succeed(undefined, '添加公告成功')
     } else {
-      throw new Error({ message: '添加公告失败' })
+      throw new Error('添加公告失败' )
     }
   } catch(e) {
-    console.log(e)
     ctx.body = new ResModel().err(undefined, e.message)
   }
 })
@@ -123,7 +123,7 @@ router.delete('/announcement', async (ctx) => {
         announcement_id
       })
     } else {
-      throw new Error({ message: '删除失败' })
+      throw new Error('删除失败')
     }
     ctx.body = new ResModel().succeed(undefined, '删除成功')
   } catch(e) {

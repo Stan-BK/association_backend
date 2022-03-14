@@ -83,6 +83,7 @@ router.get('/article/:id?', async (ctx) => {
 router.put('/article', async (ctx) => {
   const operate = ctx.db.operate
   const article = ctx.request.body
+  const token = ctx.header['authorization']
   try {
     if (article.name === '' || !article.association_id) {
       throw new Error('必填字段为空')
@@ -101,7 +102,7 @@ router.put('/article', async (ctx) => {
       })
       ctx.body = new ResModel().succeed(undefined, '添加文章成功')
     } else {
-      throw new Error({ message: '添加文章失败'})
+      throw new Error('添加文章失败')
     }
   } catch(e) {
     ctx.body = new ResModel().err(undefined, e.message)
@@ -123,7 +124,7 @@ router.delete('/article', async (ctx) => {
         article_id
       })
     } else {
-      throw new Error({ message: '删除失败'})
+      throw new Error('删除失败')
     }
     ctx.body = new ResModel().succeed(undefined, '删除成功')
   } catch(e) {
