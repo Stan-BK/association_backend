@@ -90,7 +90,7 @@ router.put('/announcement', async (ctx) => {
     await validate(token)
     const { username } = splitToken(token)
     const admin = await operate['SelectOne']('user', { username: username })
-    const res = admin.associationAssociationId === announcement.association_id
+    const res = admin.associationAssociationId == announcement.association_id
     if (res) {
       await operate['Insert']('announcement', {
         associationAssociationId: announcement.association_id,
