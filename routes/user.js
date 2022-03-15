@@ -49,32 +49,31 @@ router.get('/user/info', async (ctx) => {
   }
 })
 
-router.put('/user/register', async (ctx, next) => {
+router.post('/user/register', async (ctx) => {
   const operate = ctx.db.operate
   const user = ctx.request.body
   try {
     if (user.username === '' || user.password === '') {
       throw new Error('用户名和密码不能为空')
     }
-    if (user.password !== user.confirmpsw) {
+    if (user.password !== user.confirmpwd) {
       throw new Error('两次密码输入不一致')
     }
     await operate['Insert']('user', {
-      avatar: user.avatar,
       username: user.username,
       password: user.password,
-      nickname: generateRandomNickname(),
-      user_role: 1
+      nickname: generateRandomNickname()
     })
     const token = await generateToken(user.username, false) // 根据用户名生成token
     ctx.body = new ResModel().succeed(token)
   } catch(e) {
+    console.log(e)
     let error = generateError(e)
     ctx.body = new ResModel().err(undefined, error)
   }
 
   function generateRandomNickname() {
-    const str = Array.from({ length: 13 }).map(() => strUpc.concat(strLwc, strNum)[Math.floor(Math.random() * (26 + 26 + 10))]).join('')
+    const str = Array.from({ length: 8 }).map(() => strUpc.concat(strLwc, strNum)[Math.floor(Math.random() * (26 + 26 + 10))]).join('')
     return 'ank_' + str
   }
 })
