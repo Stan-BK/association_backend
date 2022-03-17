@@ -69,6 +69,9 @@ router.post('/user/register', async (ctx) => {
   } catch(e) {
     console.log(e)
     let error = generateError(e)
+    if (error.match('must be unique')) {
+      error = '用户名已存在'
+    }
     ctx.body = new ResModel().err(undefined, error)
   }
 
