@@ -37,6 +37,77 @@ router.get('/announcement/collect', async (ctx) => {
   }
 })
 
+// 添加收藏公告
+router.put('/announcement/collect', async (ctx) => {
+  const operate = ctx.db.operate
+  const token = ctx.header['authorization']
+  const { announcement_id } = ctx.request.body
+  try {
+    await validate(token)
+    const { username } = splitToken(token)
+    let announcement = await operate['SelectOne']('announcement', {
+      announcement_id
+    })
+    if (announcement !== String(null)) {
+      let [{'announcement_collect': collection}] = await operate['Select']('user', ['announcement_collect'], { username: username })
+      if (collection) {
+        collection = Array.from(new Set(collection.split(',')).add(announcement_id)).join(',')
+        await operate['Update']('user', { 
+          'announcement_collect': collection 
+        }, {
+          username: username
+        })
+        ctx.body = new ResModel().succeed(undefined, '收藏成功')
+      } else {
+        await operate['Update']('user', {
+          'announcement_collect': announcement_id.toString()
+        }, {
+          username: username
+        })
+        ctx.body = new ResModel().succeed(undefined, '收藏成功')
+      }
+    } else {
+      throw new Error('未找到相关公告')
+    }
+  } catch(e) {
+    ctx.body = new ResModel().err(undefined, e.message)
+  }
+})
+
+
+// 删除收藏公告
+router.delete('/announcement/collect', async (ctx) => {
+  const operate = ctx.db.operate
+  const token = ctx.header['authorization']
+  const { announcement_id } = ctx.request.query
+  try {
+    await validate(token)
+    const { username } = splitToken(token)
+    let announcement = await operate['SelectOne']('announcement', {
+      announcement_id
+    })
+    if (announcement !== String(null)) {
+      let [{'announcement_collect': collection}] = await operate['Select']('user', ['announcement_collect'], { username: username })
+      if (collection) {
+        collection = collection.split(',').filter(item => item != announcement_id).join(',')
+        await operate['Update']('user', { 
+          'announcement_collect': collection 
+        }, {
+          username: username
+        })
+        ctx.body = new ResModel().succeed(undefined, '已取消收藏')
+      } else {
+        throw new Error('未找到相关收藏')
+      }
+    } else {
+      throw new Error('未找到相关收藏')
+    }
+  } catch(e) {
+    ctx.body = new ResModel().err(undefined, e.message)
+  }
+})
+
+
 // 返回社团文章列表
 router.get('/:association/announcement', async (ctx) => {
   const model = ctx.db.model

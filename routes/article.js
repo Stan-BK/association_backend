@@ -38,6 +38,75 @@ router.get('/article/collect', async (ctx) => {
   }
 })
 
+// 添加收藏文章
+router.put('/article/collect', async (ctx) => {
+  const operate = ctx.db.operate
+  const token = ctx.header['authorization']
+  const { article_id } = ctx.request.body
+  try {
+    await validate(token)
+    const { username } = splitToken(token)
+    let article = await operate['SelectOne']('article', {
+      article_id
+    })
+    if (article !== String(null)) {
+      let [{'article_collect': collection}] = await operate['Select']('user', ['article_collect'], { username: username })
+      if (collection) {
+        collection = Array.from(new Set(collection.split(',')).add(article_id)).join(',')
+        await operate['Update']('user', { 
+          'article_collect': collection 
+        }, {
+          username: username
+        })
+        ctx.body = new ResModel().succeed(undefined, '收藏成功')
+      } else {
+        await operate['Update']('user', {
+          'article_collect': article_id.toString()
+        }, {
+          username: username
+        })
+        ctx.body = new ResModel().succeed(undefined, '收藏成功')
+      }
+    } else {
+      throw new Error('未找到相关文章')
+    }
+  } catch(e) {
+    ctx.body = new ResModel().err(undefined, e.message)
+  }
+})
+
+// 删除收藏文章
+router.delete('/article/collect', async (ctx) => {
+  const operate = ctx.db.operate
+  const token = ctx.header['authorization']
+  const { article_id } = ctx.request.query
+  try {
+    await validate(token)
+    const { username } = splitToken(token)
+    let article = await operate['SelectOne']('article', {
+      article_id
+    })
+    if (article !== String(null)) {
+      let [{'article_collect': collection}] = await operate['Select']('user', ['article_collect'], { username: username })
+      if (collection) {
+        collection = collection.split(',').filter(item => item != article_id).join(',')
+        await operate['Update']('user', { 
+          'article_collect': collection 
+        }, {
+          username: username
+        })
+        ctx.body = new ResModel().succeed(undefined, '已取消收藏')
+      } else {
+        throw new Error('未找到相关收藏')
+      }
+    } else {
+      throw new Error('未找到相关收藏')
+    }
+  } catch(e) {
+    ctx.body = new ResModel().err(undefined, e.message)
+  }
+})
+
 // 返回社团文章列表
 router.get('/:association/article', async (ctx) => {
   const model = ctx.db.model
