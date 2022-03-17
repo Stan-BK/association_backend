@@ -22,15 +22,15 @@ router.get('/article/collect', async (ctx) => {
     const token = ctx.header['authorization']
     await validate(token)
     const { username } = splitToken(token)
-    let collection = await operate['Select']('user', ['article_collect'], { username: username })
-    if (collection.length) {
-      collection = collection[0]['article_collect'].split(',')
+    let [{'article_collect': collection}] = await operate['Select']('user', ['article_collect'], { username: username })
+    if (collection) {
+      collection = collection.split(',')
       const content = await operate['Select']('article', ['article_id', 'name', 'avatar', 'abstract', 'associationAssociationId'], {
         article_id: collection
       }, undefined, model.association)
       ctx.body = new ResModel().succeed(content)
     } else {
-      ctx.body = new ResModel().success([])
+      ctx.body = new ResModel().succeed([])
     }
   } catch(e) {
     console.log(e)
