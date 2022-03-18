@@ -41,7 +41,7 @@ router.get('/announcement/collect', async (ctx) => {
 router.put('/announcement/collect', async (ctx) => {
   const operate = ctx.db.operate
   const token = ctx.header['authorization']
-  const { announcement_id } = ctx.request.body
+  const { announcement_id } = ctx.request.query
   try {
     await validate(token)
     const { username } = splitToken(token)
@@ -57,14 +57,14 @@ router.put('/announcement/collect', async (ctx) => {
         }, {
           username: username
         })
-        ctx.body = new ResModel().succeed(undefined, '收藏成功')
+        ctx.body = new ResModel().succeed(collection, '收藏成功')
       } else {
         await operate['Update']('user', {
           'announcement_collect': announcement_id.toString()
         }, {
           username: username
         })
-        ctx.body = new ResModel().succeed(undefined, '收藏成功')
+        ctx.body = new ResModel().succeed(announcement_id.toString(), '收藏成功')
       }
     } else {
       throw new Error('未找到相关公告')
@@ -95,7 +95,7 @@ router.delete('/announcement/collect', async (ctx) => {
         }, {
           username: username
         })
-        ctx.body = new ResModel().succeed(undefined, '已取消收藏')
+        ctx.body = new ResModel().succeed(collection, '已取消收藏')
       } else {
         throw new Error('未找到相关收藏')
       }
