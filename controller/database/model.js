@@ -98,7 +98,7 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
       allowNull: false
     },
     topic_type: {
-      type: INTEGER,
+      type: STRING,
       allowNull: false
     },
     parent_id: {
