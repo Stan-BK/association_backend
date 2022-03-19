@@ -101,6 +101,9 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
       type: INTEGER,
       allowNull: false
     },
+    parent_id: {
+      type: INTEGER
+    },
     content: {
       type: STRING(100),
       allowNull: false
