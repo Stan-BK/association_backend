@@ -23,7 +23,7 @@ router.get('/comment', async (ctx) => {
 router.put('/comment', async (ctx) => {
   const operate = ctx.db.operate
   const token = ctx.header['authorization']
-  const { parent_id, content, topic_id, topic_type } = ctx.request.body
+  const { parent_id, content, topic_id, topic_type, reply_to, notice_to } = ctx.request.body
   try {
     await validate(token)
     const { username } = splitToken(token)
@@ -46,10 +46,19 @@ router.put('/comment', async (ctx) => {
       topic_type: topic_type,
       topic_id: topic_id,
       parent_id,
+      reply_to,
       content: content,
       userUserId: user_id
     })
-    ctx.body = new ResModel().succeed(undefined, '评论成功')
+    if (notice_to) {
+      // 添加到通知表及被回复用户条目中
+      await operate['Insert']('notice', {
+        notice_to,
+        notice_from: comment.comment_id,
+        notice_type: 'comment'
+      })
+    }
+    ctx.body = new ResModel().succeed(comment, '评论成功')
   } catch(e) {
     ctx.body = new ResModel().err(undefined, e.message)
   }

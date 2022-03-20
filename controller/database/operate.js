@@ -2,6 +2,7 @@ const operate = function(model) {
   async function Insert(table, options) {
     const person = await model[table].create({...options})
     console.log('增加了新条目:', person.toJSON())
+    return person
   }
   async function Select(table, options, where, include, association) {
     const person = await model[table].findAll({

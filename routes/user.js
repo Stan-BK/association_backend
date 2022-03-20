@@ -40,10 +40,15 @@ router.get('/user/info', async (ctx) => {
     await validate(ctx.header['authorization'])
     // 解码得出用户名以进行数据查询
     const username = Buffer.from(ctx.header['authorization'].split(':')[0], 'base64').toString('utf-8')
-    const content = await operate['SelectOne']('user', {
+    const user = await operate['SelectOne']('user', {
       username: username
     }, model['association'])
-    ctx.body = new ResModel().succeed(content)
+    const notice = await operate['Select']('notice', undefined, {
+      notice_to: [String(user.user_id), 'all']
+    })
+    
+    user.dataValues.hasNewNotice = notice.length > user.notice_sum ? true : false
+    ctx.body = new ResModel().succeed(user)
   } catch(e) {
     ctx.body = new ResModel().err(undefined, e)
   }

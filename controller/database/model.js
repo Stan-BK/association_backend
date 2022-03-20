@@ -27,7 +27,11 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
     },
     avatar: STRING(1000),
     article_collect: STRING,
-    announcement_collect: STRING
+    announcement_collect: STRING,
+    notice_sum: {
+      type: INTEGER,
+      defaultValue: 0
+    }
   }, {
     timestamps: true
   })
@@ -104,12 +108,35 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
     parent_id: {
       type: INTEGER
     },
+    reply_to: {
+      type: INTEGER
+    },
     content: {
       type: STRING(100),
       allowNull: false
     }
   }, {
     timestamps: true
+  })
+
+  const notice = sequelize.define('notice', {
+    notice_id: {
+      type: INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
+    notice_to: {
+      type: STRING,
+      allowNull: false
+    },
+    notice_from: {
+      type: INTEGER,
+      allowNull: false
+    },
+    notice_type: {
+      type: STRING,
+      allowNull: false
+    }
   })
 
   association.hasMany(user)
@@ -120,13 +147,16 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
   announcement.belongsTo(association)
   user.hasMany(comment)
   comment.belongsTo(user)
+  user.hasMany(notice)
+  notice.belongsTo(user)
 
   return {
     user,
     association,
     article,
     announcement,
-    comment
+    comment,
+    notice
   }
 }
 
