@@ -47,7 +47,8 @@ router.get('/user/info', async (ctx) => {
       notice_to: [String(user.user_id), 'all']
     })
     
-    user.dataValues.hasNewNotice = notice.length > user.notice_sum ? true : false
+    const notice_num = user.notice_sum ? user.notice_sum.split(',').length : 0
+    user.dataValues.hasNewNotice = notice.length > notice_num ? true : false
     ctx.body = new ResModel().succeed(user)
   } catch(e) {
     ctx.body = new ResModel().err(undefined, e)

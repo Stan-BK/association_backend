@@ -26,11 +26,11 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
       unique: true
     },
     avatar: STRING(1000),
-    article_collect: STRING,
-    announcement_collect: STRING,
+    article_collect: STRING(1000),
+    announcement_collect: STRING(1000),
     notice_sum: {
-      type: INTEGER,
-      defaultValue: 0
+      type: STRING(1000),
+      defaultValue: ''
     }
   }, {
     timestamps: true
