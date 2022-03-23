@@ -179,6 +179,38 @@ router.put('/announcement', async (ctx) => {
   }
 })
 
+
+// 修改公告
+router.post('/announcement', async (ctx) => {
+  const operate = ctx.db.operate
+  const announcement = ctx.request.body
+  const token = ctx.header['authorization']
+  try {
+    if (announcement.name === '' || !announcement.association_id) {
+      throw new Error('必填字段为空')
+    }
+    await validate(token)
+    const { username } = splitToken(token)
+    const admin = await operate['SelectOne']('user', { username: username })
+    const res = admin.associationAssociationId == announcement.association_id
+    if (res) {
+      await operate['Update']('announcement', {
+        name: announcement.name,
+        avatar: announcement.avatar,
+        abstract: announcement.abstract,
+        content: announcement.content
+      },{
+        announcement_id: Number(announcement.announcement_id),
+      })
+      ctx.body = new ResModel().succeed(undefined, '修改文章成功')
+    } else {
+      throw new Error('修改文章失败')
+    }
+  } catch(e) {
+    ctx.body = new ResModel().err(undefined, e.message)
+  }
+})
+
 // 删除公告
 router.delete('/announcement', async (ctx) => {
   const operate = ctx.db.operate

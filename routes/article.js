@@ -179,6 +179,37 @@ router.put('/article', async (ctx) => {
   }
 })
 
+// 修改文章
+router.post('/article', async (ctx) => {
+  const operate = ctx.db.operate
+  const article = ctx.request.body
+  const token = ctx.header['authorization']
+  try {
+    if (article.name === '' || !article.association_id) {
+      throw new Error('必填字段为空')
+    }
+    await validate(token)
+    const { username } = splitToken(token)
+    const admin = await operate['SelectOne']('user', { username: username })
+    const res = admin.associationAssociationId == article.association_id
+    if (res) {
+      await operate['Update']('article', {
+        name: article.name,
+        avatar: article.avatar,
+        abstract: article.abstract,
+        content: article.content
+      },{
+        article_id: Number(article.article_id),
+      })
+      ctx.body = new ResModel().succeed(undefined, '修改文章成功')
+    } else {
+      throw new Error('修改文章失败')
+    }
+  } catch(e) {
+    ctx.body = new ResModel().err(undefined, e.message)
+  }
+})
+
 // 删除文章
 router.delete('/article', async (ctx) => {
   const operate = ctx.db.operate
