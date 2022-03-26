@@ -47,6 +47,9 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
       allowNull: false,
       unique: true
     },
+    description: {
+      type: STRING(1000)
+    },
     path: {
       type: STRING,
       allowNull: false,
