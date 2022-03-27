@@ -2,6 +2,25 @@ const Router = require('koa-router')
 const router = new Router()
 const ResModel = require('../model/response')
 const { splitToken, validate } = require('../src/user/user')
+const { Op } = require('sequelize')
+
+// 添加公告模糊搜索功能
+router.get('/announcement_s', async (ctx) => {
+  const model = ctx.db.model
+  const operate = ctx.db.operate
+  const { q, detail } = ctx.request.query
+  const detailAttrs = ['announcement_id', 'name', 'avatar', 'abstract', 'associationAssociationId']
+  try {
+    const content = await operate['Select']('announcement', detail == 1 ? detailAttrs : ['name'], {
+      name: {
+        [Op.like]: `%${q }%`
+      }
+    }, undefined, detail == 1 ? model.association : undefined)
+    ctx.body = new ResModel().succeed(content)
+  } catch(e) {
+    ctx.body = new ResModel().err(undefined, e.message)
+  }
+})
 
 // 返回所有公告列表
 router.get('/announcement', async (ctx) => {

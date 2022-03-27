@@ -3,6 +3,25 @@ const router = new Router()
 const ResModel = require('../model/response')
 const { validateRole } = require('../src/user/admin')
 const { splitToken, validate } = require('../src/user/user')
+const { Op } = require('sequelize')
+
+// 添加文章模糊搜索功能
+router.get('/article_s', async (ctx) => {
+  const model = ctx.db.model
+  const operate = ctx.db.operate
+  const { q, detail } = ctx.request.query
+  const detailAttrs = ['article_id', 'name', 'avatar', 'abstract', 'associationAssociationId']
+  try {
+    const content = await operate['Select']('article', detail == 1 ? detailAttrs : ['name'], {
+      name: {
+        [Op.like]: `%${q }%`
+      }
+    }, undefined, detail == 1 ? model.association : undefined)
+    ctx.body = new ResModel().succeed(content)
+  } catch(e) {
+    ctx.body = new ResModel().err(undefined, e.message)
+  }
+})
 
 // 返回所有文章列表
 router.get('/article', async (ctx) => {
