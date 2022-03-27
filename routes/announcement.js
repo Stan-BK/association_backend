@@ -244,6 +244,10 @@ router.delete('/announcement', async (ctx) => {
       await operate['Delete']('announcement', {
         announcement_id
       })
+      await operate['Delete']('comment', {
+        topic_id: announcement_id,
+        topic_type: 'announcement'
+      })
     } else {
       throw new Error('删除失败')
     }
