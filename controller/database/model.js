@@ -150,8 +150,6 @@ function defineSequelizeModel (sequelize, DataTypes) { // 建立sequelize模型
   announcement.belongsTo(association)
   user.hasMany(comment)
   comment.belongsTo(user)
-  user.hasMany(notice)
-  notice.belongsTo(user)
 
   return {
     user,
