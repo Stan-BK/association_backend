@@ -46,9 +46,10 @@ router.get('/user/info', async (ctx) => {
     const notice = await operate['Select']('notice', undefined, {
       notice_to: [String(user.user_id), 'all']
     })
-    
+    // 判断是否有新通知
     const notice_num = user.notice_sum ? user.notice_sum.split(',').length : 0
     user.dataValues.hasNewNotice = notice.length > notice_num ? true : false
+
     ctx.body = new ResModel().succeed(user)
   } catch(e) {
     ctx.body = new ResModel().err(undefined, e)
@@ -84,6 +85,32 @@ router.post('/user/register', async (ctx) => {
   function generateRandomNickname() {
     const str = Array.from({ length: 8 }).map(() => strUpc.concat(strLwc, strNum)[Math.floor(Math.random() * (26 + 26 + 10))]).join('')
     return 'ank_' + str
+  }
+})
+
+// 用户修改个人信息
+router.post('/user/info', async (ctx) => {
+  const allowForm = ['password', 'nickname', 'avatar']
+  const operate = ctx.db.operate
+  const form = ctx.request.body
+  const model = ctx.db.model
+  const allowKey = Object.keys(form).filter(item => {
+    return allowForm.includes(item)
+  })
+  const updateValue = {}
+  allowKey.forEach(item => updateValue[item] = form[item])
+  try {
+    await validate(ctx.header['authorization'])
+    const username = Buffer.from(ctx.header['authorization'].split(':')[0], 'base64').toString('utf-8')
+    await operate['Update']('user', updateValue, {
+      username: username
+    })
+    const user = await operate['SelectOne']('user', {
+      username: username
+    }, model['association'])
+    ctx.body = new ResModel().succeed(user)
+  } catch(e) {
+    ctx.body = new ResModel().err(undefined, e.message)
   }
 })
 
